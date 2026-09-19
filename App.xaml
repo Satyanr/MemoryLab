@@ -78,18 +78,19 @@
 
 
                 <!-- ========================= -->
-                <!-- BUTTON -->
+                <!-- DARK BUTTON -->
                 <!-- ========================= -->
 
                 <Style TargetType="{x:Type Button}">
+
                         <Setter Property="Background"
-                                Value="{StaticResource ControlBrush}"/>
+                                Value="#222731"/>
 
                         <Setter Property="Foreground"
-                                Value="{StaticResource TextBrush}"/>
+                                Value="#F3F4F6"/>
 
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderBrush}"/>
+                                Value="#343B47"/>
 
                         <Setter Property="BorderThickness"
                                 Value="1"/>
@@ -106,35 +107,81 @@
                         <Setter Property="Cursor"
                                 Value="Hand"/>
 
-                        <Style.Triggers>
+                        <Setter Property="Template">
 
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                        <Setter Property="Background"
-                                                Value="{StaticResource ControlHoverBrush}"/>
-                                        <Setter Property="BorderBrush"
-                                                Value="{StaticResource AccentBrush}"/>
-                                </Trigger>
+                                <Setter.Value>
 
-                                <Trigger Property="IsPressed"
-                                         Value="True">
-                                        <Setter Property="Background"
-                                                Value="{StaticResource ControlPressedBrush}"/>
-                                </Trigger>
+                                        <ControlTemplate TargetType="{x:Type Button}">
 
-                                <Trigger Property="IsEnabled"
-                                         Value="False">
-                                        <Setter Property="Foreground"
-                                                Value="{StaticResource DisabledTextBrush}"/>
-                                        <Setter Property="Background"
-                                                Value="#1A1E25"/>
-                                        <Setter Property="BorderBrush"
-                                                Value="#292F39"/>
-                                </Trigger>
+                                                <Border x:Name="ButtonBorder"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="3">
 
-                        </Style.Triggers>
+                                                        <ContentPresenter
+                                                                Margin="{TemplateBinding Padding}"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                RecognizesAccessKey="True"/>
+
+                                                </Border>
+
+                                                <ControlTemplate.Triggers>
+
+                                                        <!-- HOVER -->
+                                                        <Trigger Property="IsMouseOver"
+                                                                 Value="True">
+
+                                                                <Setter TargetName="ButtonBorder"
+                                                                        Property="Background"
+                                                                        Value="#2C3340"/>
+
+                                                                <Setter TargetName="ButtonBorder"
+                                                                        Property="BorderBrush"
+                                                                        Value="#38BDF8"/>
+
+                                                        </Trigger>
+
+                                                        <!-- PRESSED -->
+                                                        <Trigger Property="IsPressed"
+                                                                 Value="True">
+
+                                                                <Setter TargetName="ButtonBorder"
+                                                                        Property="Background"
+                                                                        Value="#353D4B"/>
+
+                                                        </Trigger>
+
+                                                        <!-- DISABLED -->
+                                                        <Trigger Property="IsEnabled"
+                                                                 Value="False">
+
+                                                                <Setter TargetName="ButtonBorder"
+                                                                        Property="Background"
+                                                                        Value="#181C22"/>
+
+                                                                <Setter TargetName="ButtonBorder"
+                                                                        Property="BorderBrush"
+                                                                        Value="#292F39"/>
+
+                                                                <Setter Property="Foreground"
+                                                                        Value="#6B7280"/>
+
+                                                                <Setter Property="Cursor"
+                                                                        Value="Arrow"/>
+
+                                                        </Trigger>
+
+                                                </ControlTemplate.Triggers>
+
+                                        </ControlTemplate>
+
+                                </Setter.Value>
+
+                        </Setter>
+
                 </Style>
-
 
                 <!-- ========================= -->
                 <!-- TEXTBOX -->

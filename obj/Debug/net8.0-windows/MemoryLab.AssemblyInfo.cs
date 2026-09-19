@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Windows memory inspection and debugging lab for owned/test applications.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc4cd7b5924103f385ee10afaa22a53f904338d9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a38d4471e169c5c6ff6cc24131536189f245fbcd")]
 [assembly: System.Reflection.AssemblyProductAttribute("MemoryLab")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MemoryLab")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

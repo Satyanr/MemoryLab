@@ -2,7 +2,6 @@
 
 Phase 8 adalah build kumulatif final dari roadmap awal MemoryLab.
 
-Semua fitur Phase 1–7 tetap tersedia.
 
 ## Core features
 

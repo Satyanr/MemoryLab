@@ -1,0 +1,17 @@
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\AboutWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\AppSettingsWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\EditValueWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\MemoryViewerWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\PointerToolsWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\ProjectSettingsWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\RecentProjectsWindow.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\App.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\AboutWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\AppSettingsWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\EditValueWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\MemoryViewerWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\PointerToolsWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\ProjectSettingsWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\RecentProjectsWindow.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\App.g.cs
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\MemoryLab_MarkupCompile.cache

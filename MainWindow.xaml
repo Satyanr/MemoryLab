@@ -45,7 +45,7 @@
                                Foreground="White"
                                FontSize="24"
                                FontWeight="SemiBold"/>
-                    <TextBlock Text="Phase 8 — MemoryLab v1.0"
+                    <TextBlock Text="Memory Scanner & Debugging Toolkit • v1.0"
                                Margin="0,4,0,0"
                                Foreground="#9CA3AF"/>
                     <TextBlock x:Name="ProjectStatusText"
@@ -86,6 +86,8 @@
                         Width="100"
                         Height="36"
                         Margin="8,0,0,0"
+                        Background="#075985"
+                        BorderBrush="#0284C7"
                         Click="Attach_Click"
                         Content="Attach"/>
 
@@ -184,23 +186,35 @@
                                    Text="Not attached"
                                    TextWrapping="Wrap"/>
 
-                        <TextBlock Foreground="#9CA3AF" Text="Scan type"/>
+                        <TextBlock Foreground="#9CA3AF"
+                                   Text="Scan type"/>
                         <ComboBox x:Name="ScanModeComboBox"
                                   Height="34"
                                   Margin="0,5,0,10"
                                   SelectedIndex="0"
                                   SelectionChanged="ScanModeComboBox_SelectionChanged">
-                            <ComboBoxItem Tag="ExactValue" Content="Exact Value"/>
-                            <ComboBoxItem Tag="UnknownInitialValue" Content="Unknown Initial Value"/>
-                            <ComboBoxItem Tag="ChangedValue" Content="Changed Value"/>
-                            <ComboBoxItem Tag="UnchangedValue" Content="Unchanged Value"/>
-                            <ComboBoxItem Tag="IncreasedValue" Content="Increased Value"/>
-                            <ComboBoxItem Tag="DecreasedValue" Content="Decreased Value"/>
-                            <ComboBoxItem Tag="GreaterThan" Content="Greater Than"/>
-                            <ComboBoxItem Tag="LessThan" Content="Less Than"/>
-                            <ComboBoxItem Tag="Between" Content="Between"/>
-                            <ComboBoxItem Tag="IncreasedBy" Content="Increased By"/>
-                            <ComboBoxItem Tag="DecreasedBy" Content="Decreased By"/>
+                            <ComboBoxItem Tag="ExactValue"
+                                          Content="Exact Value"/>
+                            <ComboBoxItem Tag="UnknownInitialValue"
+                                          Content="Unknown Initial Value"/>
+                            <ComboBoxItem Tag="ChangedValue"
+                                          Content="Changed Value"/>
+                            <ComboBoxItem Tag="UnchangedValue"
+                                          Content="Unchanged Value"/>
+                            <ComboBoxItem Tag="IncreasedValue"
+                                          Content="Increased Value"/>
+                            <ComboBoxItem Tag="DecreasedValue"
+                                          Content="Decreased Value"/>
+                            <ComboBoxItem Tag="GreaterThan"
+                                          Content="Greater Than"/>
+                            <ComboBoxItem Tag="LessThan"
+                                          Content="Less Than"/>
+                            <ComboBoxItem Tag="Between"
+                                          Content="Between"/>
+                            <ComboBoxItem Tag="IncreasedBy"
+                                          Content="Increased By"/>
+                            <ComboBoxItem Tag="DecreasedBy"
+                                          Content="Decreased By"/>
                         </ComboBox>
 
                         <TextBlock x:Name="Value1Label"
@@ -225,7 +239,8 @@
                                  Text="200"
                                  Visibility="Collapsed"/>
 
-                        <TextBlock Foreground="#9CA3AF" Text="Value type"/>
+                        <TextBlock Foreground="#9CA3AF"
+                                   Text="Value type"/>
                         <ComboBox x:Name="ScanValueTypeComboBox"
                                   Height="34"
                                   Margin="0,5,0,8"
@@ -250,6 +265,8 @@
                             <Button x:Name="FirstScanButton"
                                     Grid.Column="0"
                                     Height="38"
+                                    Background="#075985"
+                                    BorderBrush="#0284C7"
                                     Click="FirstScan_Click"
                                     Content="First Scan"/>
 

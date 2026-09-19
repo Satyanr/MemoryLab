@@ -15,7 +15,7 @@
             <RowDefinition Height="14"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="14"/>
-            <RowDefinition Height="230"/>
+            <RowDefinition Height="215"/>
             <RowDefinition Height="14"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -134,7 +134,7 @@
                     BorderThickness="1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <DockPanel>
+                        <DockPanel LastChildFill="False">
                             <TextBlock Text="Processes"
                                        Foreground="White"
                                        FontSize="17"
@@ -145,8 +145,8 @@
                         </DockPanel>
 
                         <DataGrid x:Name="ProcessGrid"
-                                  Height="170"
-                                  Margin="0,8,0,16"
+                                  Height="135"
+                                  Margin="0,8,0,12"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   SelectionMode="Single"
@@ -312,7 +312,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <DockPanel>
+                    <DockPanel LastChildFill="False">
                         <TextBlock Text="Scan Results"
                                    Foreground="White"
                                    FontSize="17"
@@ -392,7 +392,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <DockPanel>
+                <DockPanel LastChildFill="False">
                     <TextBlock Text="Address List"
                                Foreground="White"
                                FontSize="17"
@@ -451,37 +451,37 @@
                             Margin="0,0,8,0"
                             Click="MakeModuleRelative_Click"
                             Content="Make Module Relative"/>
-                    <Button Width="120"
+                    <Button Width="115"
                             Height="32"
                             Margin="0,0,8,0"
                             Click="PointerFromAddress_Click"
                             Content="Pointer Tools"/>
-                    <Button Width="120"
+                    <Button Width="115"
                             Height="32"
                             Margin="0,0,8,0"
                             Click="ViewAddress_Click"
                             Content="Memory Viewer"/>
-                    <Button Width="120"
+                    <Button Width="115"
                             Height="32"
                             Margin="0,0,8,0"
                             Click="EditAddress_Click"
                             Content="Edit Value"/>
-                    <Button Width="120"
+                    <Button Width="115"
                             Height="32"
                             Margin="0,0,8,0"
                             Click="ToggleFreeze_Click"
                             Content="Toggle Freeze"/>
-                    <Button Width="120"
+                    <Button Width="115"
                             Height="32"
                             Margin="0,0,8,0"
                             Click="RemoveAddress_Click"
                             Content="Remove"/>
-                    <Button Width="130"
+                    <Button Width="125"
                             Height="32"
                             Margin="0,0,8,0"
                             Click="ProjectSettings_Click"
                             Content="Project Settings"/>
-                    <Button Width="120"
+                    <Button Width="115"
                             Height="32"
                             Click="AutoAttach_Click"
                             Content="Auto Attach"/>

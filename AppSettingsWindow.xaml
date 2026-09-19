@@ -1,0 +1,74 @@
+<Window x:Class="MemoryLab.AppSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MemoryLab Settings"
+        Width="470"
+        Height="390"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#0F1115">
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="18"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="18"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="18"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="MemoryLab Settings"
+                   Foreground="White"
+                   FontSize="21"
+                   FontWeight="SemiBold"/>
+
+        <TextBlock Grid.Row="2"
+                   Foreground="#9CA3AF"
+                   Text="Address List refresh interval (ms)"/>
+        <TextBox x:Name="AddressRefreshTextBox"
+                 Grid.Row="4"
+                 Height="34"
+                 Padding="8,6"/>
+
+        <TextBlock Grid.Row="6"
+                   Foreground="#9CA3AF"
+                   Text="Memory Viewer refresh interval (ms)"/>
+        <TextBox x:Name="ViewerRefreshTextBox"
+                 Grid.Row="8"
+                 Height="34"
+                 Padding="8,6"/>
+
+        <TextBlock Grid.Row="10"
+                   Foreground="#9CA3AF"
+                   Text="Maximum scan results"/>
+        <TextBox x:Name="ScanLimitTextBox"
+                 Grid.Row="12"
+                 Height="34"
+                 Padding="8,6"/>
+
+        <StackPanel Grid.Row="14"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Width="90"
+                    Height="34"
+                    Margin="0,0,8,0"
+                    IsCancel="True"
+                    Content="Cancel"/>
+            <Button Width="90"
+                    Height="34"
+                    IsDefault="True"
+                    Click="Save_Click"
+                    Content="Save"/>
+        </StackPanel>
+    </Grid>
+</Window>

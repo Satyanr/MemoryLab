@@ -1,0 +1,50 @@
+<Window x:Class="MemoryLab.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About MemoryLab"
+        Width="480"
+        Height="330"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#0F1115">
+    <Grid Margin="22">
+        <StackPanel>
+            <TextBlock Text="MemoryLab"
+                       Foreground="White"
+                       FontSize="28"
+                       FontWeight="SemiBold"/>
+
+            <TextBlock Margin="0,5,0,0"
+                       Foreground="#9CA3AF"
+                       Text="Version 1.0.0"/>
+
+            <TextBlock Margin="0,22,0,0"
+                       Foreground="#E5E7EB"
+                       TextWrapping="Wrap"
+                       Text="Windows memory inspection and debugging lab for applications you own or control."/>
+
+            <TextBlock Margin="0,16,0,0"
+                       Foreground="#9CA3AF"
+                       TextWrapping="Wrap"
+                       Text="Includes process inspection, memory scanning, editing, freeze, memory viewer, pointer tools, and project persistence."/>
+
+            <Border Margin="0,22,0,0"
+                    Padding="12"
+                    CornerRadius="8"
+                    Background="#171A21"
+                    BorderBrush="#2B303B"
+                    BorderThickness="1">
+                <TextBlock Foreground="#9CA3AF"
+                           TextWrapping="Wrap"
+                           Text="MemoryLab does not include anti-cheat bypass, stealth, kernel-driver concealment, or DRM bypass features."/>
+            </Border>
+
+            <Button Width="100"
+                    Height="34"
+                    Margin="0,20,0,0"
+                    HorizontalAlignment="Right"
+                    IsCancel="True"
+                    Content="Close"/>
+        </StackPanel>
+    </Grid>
+</Window>

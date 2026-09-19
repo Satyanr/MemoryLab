@@ -2,19 +2,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MemoryLab"
-        Width="980"
-        Height="640"
-        MinWidth="840"
-        MinHeight="540"
+        Width="1300"
+        Height="860"
+        MinWidth="1120"
+        MinHeight="720"
         WindowStartupLocation="CenterScreen"
         Background="#0F1115">
 
     <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="14"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="230"/>
+            <RowDefinition Height="14"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -29,6 +31,13 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel>
@@ -36,32 +45,85 @@
                                Foreground="White"
                                FontSize="24"
                                FontWeight="SemiBold"/>
-                    <TextBlock Text="Phase 1 — Process &amp; Memory Access"
+                    <TextBlock Text="Phase 8 — MemoryLab v1.0"
                                Margin="0,4,0,0"
                                Foreground="#9CA3AF"/>
+                    <TextBlock x:Name="ProjectStatusText"
+                               Margin="0,3,0,0"
+                               Foreground="#6B7280"
+                               Text="Unsaved project"/>
                 </StackPanel>
 
                 <Button Grid.Column="1"
-                        Width="110"
+                        Width="90"
                         Height="36"
                         Margin="12,0,0,0"
+                        Click="NewProject_Click"
+                        Content="New"/>
+
+                <Button Grid.Column="2"
+                        Width="90"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Click="OpenProject_Click"
+                        Content="Open"/>
+
+                <Button Grid.Column="3"
+                        Width="90"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Click="SaveProject_Click"
+                        Content="Save"/>
+
+                <Button Grid.Column="4"
+                        Width="100"
+                        Height="36"
+                        Margin="8,0,0,0"
                         Click="RefreshProcesses_Click"
                         Content="Refresh"/>
 
-                <Button Grid.Column="2"
-                        Width="110"
+                <Button Grid.Column="5"
+                        Width="100"
                         Height="36"
-                        Margin="10,0,0,0"
+                        Margin="8,0,0,0"
                         Click="Attach_Click"
                         Content="Attach"/>
+
+                <Button Grid.Column="6"
+                        Width="110"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Click="PointerTools_Click"
+                        Content="Pointer Tools"/>
+
+                <Button Grid.Column="7"
+                        Width="82"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Click="RecentProjects_Click"
+                        Content="Recent"/>
+
+                <Button Grid.Column="8"
+                        Width="82"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Click="Settings_Click"
+                        Content="Settings"/>
+
+                <Button Grid.Column="9"
+                        Width="72"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Click="About_Click"
+                        Content="About"/>
             </Grid>
         </Border>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.2*"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="355"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
@@ -70,51 +132,169 @@
                     Background="#171A21"
                     BorderBrush="#2B303B"
                     BorderThickness="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Processes"
+                                       Foreground="White"
+                                       FontSize="17"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock x:Name="ProcessCountText"
+                                       DockPanel.Dock="Right"
+                                       Foreground="#9CA3AF"/>
+                        </DockPanel>
 
-                    <DockPanel>
-                        <TextBlock Text="Processes"
+                        <DataGrid x:Name="ProcessGrid"
+                                  Height="170"
+                                  Margin="0,8,0,16"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single"
+                                  HeadersVisibility="Column"
+                                  Background="#11141A"
+                                  Foreground="#E5E7EB"
+                                  BorderBrush="#2B303B"
+                                  GridLinesVisibility="Horizontal"
+                                  RowBackground="#11141A"
+                                  AlternatingRowBackground="#151922"
+                                  CanUserAddRows="False"
+                                  SelectionChanged="ProcessGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Process"
+                                                    Binding="{Binding Name}"
+                                                    Width="*"/>
+                                <DataGridTextColumn Header="PID"
+                                                    Binding="{Binding Id}"
+                                                    Width="78"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <TextBlock Text="Scanner"
                                    Foreground="White"
                                    FontSize="17"
                                    FontWeight="SemiBold"/>
-                        <TextBlock x:Name="ProcessCountText"
-                                   DockPanel.Dock="Right"
-                                   Foreground="#9CA3AF"
-                                   HorizontalAlignment="Right"/>
-                    </DockPanel>
 
-                    <DataGrid x:Name="ProcessGrid"
-                              Grid.Row="2"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              SelectionMode="Single"
-                              HeadersVisibility="Column"
-                              Background="#11141A"
-                              Foreground="#E5E7EB"
-                              BorderBrush="#2B303B"
-                              GridLinesVisibility="Horizontal"
-                              RowBackground="#11141A"
-                              AlternatingRowBackground="#151922"
-                              CanUserAddRows="False"
-                              SelectionChanged="ProcessGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Process"
-                                                Binding="{Binding Name}"
-                                                Width="1.2*"/>
-                            <DataGridTextColumn Header="PID"
-                                                Binding="{Binding Id}"
-                                                Width="90"/>
-                            <DataGridTextColumn Header="Window"
-                                                Binding="{Binding Title}"
-                                                Width="2*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                        <TextBlock Margin="0,8,0,0"
+                                   Foreground="#9CA3AF"
+                                   Text="Attached process"/>
+
+                        <TextBlock x:Name="AttachedText"
+                                   Margin="0,4,0,10"
+                                   Foreground="White"
+                                   Text="Not attached"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock Foreground="#9CA3AF" Text="Scan type"/>
+                        <ComboBox x:Name="ScanModeComboBox"
+                                  Height="34"
+                                  Margin="0,5,0,10"
+                                  SelectedIndex="0"
+                                  SelectionChanged="ScanModeComboBox_SelectionChanged">
+                            <ComboBoxItem Tag="ExactValue" Content="Exact Value"/>
+                            <ComboBoxItem Tag="UnknownInitialValue" Content="Unknown Initial Value"/>
+                            <ComboBoxItem Tag="ChangedValue" Content="Changed Value"/>
+                            <ComboBoxItem Tag="UnchangedValue" Content="Unchanged Value"/>
+                            <ComboBoxItem Tag="IncreasedValue" Content="Increased Value"/>
+                            <ComboBoxItem Tag="DecreasedValue" Content="Decreased Value"/>
+                            <ComboBoxItem Tag="GreaterThan" Content="Greater Than"/>
+                            <ComboBoxItem Tag="LessThan" Content="Less Than"/>
+                            <ComboBoxItem Tag="Between" Content="Between"/>
+                            <ComboBoxItem Tag="IncreasedBy" Content="Increased By"/>
+                            <ComboBoxItem Tag="DecreasedBy" Content="Decreased By"/>
+                        </ComboBox>
+
+                        <TextBlock x:Name="Value1Label"
+                                   Foreground="#9CA3AF"
+                                   Text="Value"/>
+
+                        <TextBox x:Name="ScanValueTextBox"
+                                 Height="34"
+                                 Margin="0,5,0,10"
+                                 Padding="8,6"
+                                 Text="100"/>
+
+                        <TextBlock x:Name="Value2Label"
+                                   Foreground="#9CA3AF"
+                                   Text="Second value"
+                                   Visibility="Collapsed"/>
+
+                        <TextBox x:Name="ScanValue2TextBox"
+                                 Height="34"
+                                 Margin="0,5,0,10"
+                                 Padding="8,6"
+                                 Text="200"
+                                 Visibility="Collapsed"/>
+
+                        <TextBlock Foreground="#9CA3AF" Text="Value type"/>
+                        <ComboBox x:Name="ScanValueTypeComboBox"
+                                  Height="34"
+                                  Margin="0,5,0,8"
+                                  SelectedIndex="0">
+                            <ComboBoxItem Content="Int32"/>
+                            <ComboBoxItem Content="Float"/>
+                        </ComboBox>
+
+                        <CheckBox x:Name="AlignedCheckBox"
+                                  Margin="0,5,0,12"
+                                  IsChecked="True"
+                                  Foreground="#E5E7EB"
+                                  Content="Fast Scan — 4-byte aligned"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="FirstScanButton"
+                                    Grid.Column="0"
+                                    Height="38"
+                                    Click="FirstScan_Click"
+                                    Content="First Scan"/>
+
+                            <Button x:Name="NextScanButton"
+                                    Grid.Column="2"
+                                    Height="38"
+                                    Click="NextScan_Click"
+                                    IsEnabled="False"
+                                    Content="Next Scan"/>
+                        </Grid>
+
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
+                                    Height="34"
+                                    Click="NewScan_Click"
+                                    Content="New Scan"/>
+
+                            <Button x:Name="CancelScanButton"
+                                    Grid.Column="2"
+                                    Height="34"
+                                    Click="CancelScan_Click"
+                                    IsEnabled="False"
+                                    Content="Cancel"/>
+                        </Grid>
+
+                        <ProgressBar x:Name="ScanProgressBar"
+                                     Height="8"
+                                     Margin="0,12,0,0"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     Value="0"/>
+
+                        <TextBlock x:Name="ScanInfoText"
+                                   Margin="0,7,0,0"
+                                   Foreground="#9CA3AF"
+                                   TextWrapping="Wrap"
+                                   Text="Ready."/>
+                    </StackPanel>
+                </ScrollViewer>
             </Border>
 
             <Border Grid.Column="2"
@@ -123,73 +303,193 @@
                     Background="#171A21"
                     BorderBrush="#2B303B"
                     BorderThickness="1">
-                <StackPanel>
-                    <TextBlock Text="Attached Process"
-                               Foreground="White"
-                               FontSize="17"
-                               FontWeight="SemiBold"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="AttachedText"
-                               Margin="0,10,0,18"
-                               Text="Not attached"
-                               Foreground="#9CA3AF"
-                               TextWrapping="Wrap"/>
+                    <DockPanel>
+                        <TextBlock Text="Scan Results"
+                                   Foreground="White"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"/>
 
-                    <Separator Margin="0,0,0,18"
-                               Background="#2B303B"/>
+                        <TextBlock x:Name="ResultCountText"
+                                   DockPanel.Dock="Right"
+                                   Foreground="#9CA3AF"
+                                   Text="0 results"/>
+                    </DockPanel>
 
-                    <TextBlock Text="Manual Memory Read"
-                               Foreground="White"
-                               FontSize="17"
-                               FontWeight="SemiBold"/>
+                    <DataGrid x:Name="ResultsGrid"
+                              Grid.Row="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Extended"
+                              HeadersVisibility="Column"
+                              Background="#11141A"
+                              Foreground="#E5E7EB"
+                              BorderBrush="#2B303B"
+                              GridLinesVisibility="Horizontal"
+                              RowBackground="#11141A"
+                              AlternatingRowBackground="#151922"
+                              CanUserAddRows="False"
+                              EnableRowVirtualization="True"
+                              MouseDoubleClick="ResultsGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Address"
+                                                Binding="{Binding AddressText}"
+                                                Width="220"/>
+                            <DataGridTextColumn Header="Current Value"
+                                                Binding="{Binding Value}"
+                                                Width="180"/>
+                            <DataGridTextColumn Header="Previous"
+                                                Binding="{Binding PreviousValue}"
+                                                Width="180"/>
+                            <DataGridTextColumn Header="Type"
+                                                Binding="{Binding ValueType}"
+                                                Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
 
-                    <TextBlock Margin="0,12,0,5"
-                               Foreground="#9CA3AF"
-                               Text="Address (hex)"/>
-                    <TextBox x:Name="AddressTextBox"
-                             Height="34"
-                             Padding="8,6"
-                             Text="0x0000000000000000"/>
-
-                    <TextBlock Margin="0,12,0,5"
-                               Foreground="#9CA3AF"
-                               Text="Data type"/>
-                    <ComboBox x:Name="ValueTypeComboBox"
-                              Height="34"
-                              SelectedIndex="0">
-                        <ComboBoxItem Content="Int32"/>
-                        <ComboBoxItem Content="Float"/>
-                        <ComboBoxItem Content="Bytes (16)"/>
-                    </ComboBox>
-
-                    <Button Height="36"
-                            Margin="0,14,0,0"
-                            Click="ReadMemory_Click"
-                            Content="Read Memory"/>
-
-                    <Border Margin="0,14,0,0"
-                            Padding="12"
-                            Background="#11141A"
-                            BorderBrush="#2B303B"
-                            BorderThickness="1"
-                            CornerRadius="8">
-                        <StackPanel>
-                            <TextBlock Text="Result"
-                                       Foreground="#9CA3AF"/>
-                            <TextBlock x:Name="MemoryResultText"
-                                       Margin="0,5,0,0"
-                                       FontFamily="Consolas"
-                                       FontSize="15"
-                                       Foreground="White"
-                                       Text="-"
-                                       TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                    <StackPanel Grid.Row="4"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Width="120"
+                                Height="34"
+                                Margin="0,0,8,0"
+                                Click="PointerFromResult_Click"
+                                Content="Pointer Tools"/>
+                        <Button Width="130"
+                                Height="34"
+                                Margin="0,0,8,0"
+                                Click="ViewSelectedResult_Click"
+                                Content="Memory Viewer"/>
+                        <Button Width="150"
+                                Height="34"
+                                Click="AddSelectedAddress_Click"
+                                Content="Add Selected Address"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
 
         <Border Grid.Row="4"
+                Padding="14"
+                CornerRadius="12"
+                Background="#171A21"
+                BorderBrush="#2B303B"
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel>
+                    <TextBlock Text="Address List"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock x:Name="AddressCountText"
+                               DockPanel.Dock="Right"
+                               Foreground="#9CA3AF"
+                               Text="0 entries"/>
+                </DockPanel>
+
+                <DataGrid x:Name="AddressGrid"
+                          Grid.Row="2"
+                          AutoGenerateColumns="False"
+                          SelectionMode="Extended"
+                          HeadersVisibility="Column"
+                          Background="#11141A"
+                          Foreground="#E5E7EB"
+                          BorderBrush="#2B303B"
+                          GridLinesVisibility="Horizontal"
+                          RowBackground="#11141A"
+                          AlternatingRowBackground="#151922"
+                          CanUserAddRows="False"
+                          EnableRowVirtualization="True"
+                          MouseDoubleClick="AddressGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="Freeze"
+                                                Binding="{Binding IsFrozen, Mode=TwoWay}"
+                                                Width="70"/>
+                        <DataGridTextColumn Header="Group"
+                                            Binding="{Binding Group, Mode=TwoWay}"
+                                            Width="120"/>
+                        <DataGridTextColumn Header="Description"
+                                            Binding="{Binding Description, Mode=TwoWay}"
+                                            Width="*"/>
+                        <DataGridTextColumn Header="Address"
+                                            Binding="{Binding AddressText}"
+                                            IsReadOnly="True"
+                                            Width="210"/>
+                        <DataGridTextColumn Header="Type"
+                                            Binding="{Binding ValueType}"
+                                            IsReadOnly="True"
+                                            Width="90"/>
+                        <DataGridTextColumn Header="Value"
+                                            Binding="{Binding Value}"
+                                            IsReadOnly="True"
+                                            Width="160"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="4"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button Width="145"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="MakeModuleRelative_Click"
+                            Content="Make Module Relative"/>
+                    <Button Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="PointerFromAddress_Click"
+                            Content="Pointer Tools"/>
+                    <Button Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="ViewAddress_Click"
+                            Content="Memory Viewer"/>
+                    <Button Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="EditAddress_Click"
+                            Content="Edit Value"/>
+                    <Button Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="ToggleFreeze_Click"
+                            Content="Toggle Freeze"/>
+                    <Button Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="RemoveAddress_Click"
+                            Content="Remove"/>
+                    <Button Width="130"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Click="ProjectSettings_Click"
+                            Content="Project Settings"/>
+                    <Button Width="120"
+                            Height="32"
+                            Click="AutoAttach_Click"
+                            Content="Auto Attach"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="6"
                 Padding="10"
                 CornerRadius="8"
                 Background="#171A21"

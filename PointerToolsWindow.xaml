@@ -1,0 +1,329 @@
+<Window x:Class="MemoryLab.PointerToolsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Pointer &amp; Address Tools"
+        Width="1120"
+        Height="760"
+        MinWidth="980"
+        MinHeight="650"
+        WindowStartupLocation="CenterOwner"
+        Background="#0F1115">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Padding="14"
+                CornerRadius="10"
+                Background="#171A21"
+                BorderBrush="#2B303B"
+                BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Pointer &amp; Address Tools"
+                               Foreground="White"
+                               FontSize="21"
+                               FontWeight="SemiBold"/>
+                    <TextBlock x:Name="ProcessText"
+                               Margin="0,4,0,0"
+                               Foreground="#9CA3AF"
+                               Text="Process"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Width="120"
+                        Height="34"
+                        Click="RefreshModules_Click"
+                        Content="Refresh Modules"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Padding="14"
+                    CornerRadius="10"
+                    Background="#171A21"
+                    BorderBrush="#2B303B"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Manual Pointer Chain"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Margin="0,12,0,0"
+                               Foreground="#9CA3AF"
+                               Text="Module"/>
+                    <ComboBox x:Name="ModuleComboBox"
+                              Margin="0,5,0,10"
+                              Height="34"
+                              DisplayMemberPath="DisplayName"/>
+
+                    <TextBlock Foreground="#9CA3AF"
+                               Text="Base offset (hex)"/>
+                    <TextBox x:Name="BaseOffsetTextBox"
+                             Margin="0,5,0,10"
+                             Height="34"
+                             Padding="8,6"
+                             FontFamily="Consolas"
+                             Text="0x0"/>
+
+                    <TextBlock Foreground="#9CA3AF"
+                               Text="Offsets — comma separated"/>
+                    <TextBox x:Name="OffsetsTextBox"
+                             Margin="0,5,0,10"
+                             Height="34"
+                             Padding="8,6"
+                             FontFamily="Consolas"
+                             Text="0x30, 0x18, 0xA0"/>
+
+                    <TextBlock Foreground="#9CA3AF"
+                               TextWrapping="Wrap"
+                               Text="Algorithm: start at module+baseOffset, dereference pointer, then add each offset in order."/>
+
+                    <Button Margin="0,12,0,0"
+                            Height="36"
+                            Click="ResolvePointer_Click"
+                            Content="Resolve Pointer Chain"/>
+
+                    <Border Margin="0,12,0,0"
+                            Padding="12"
+                            CornerRadius="8"
+                            Background="#11141A"
+                            BorderBrush="#2B303B"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Foreground="#9CA3AF"
+                                       Text="Resolved address"/>
+                            <TextBlock x:Name="ResolvedAddressText"
+                                       Margin="0,4,0,0"
+                                       FontFamily="Consolas"
+                                       Foreground="White"
+                                       Text="-"/>
+
+                            <TextBlock Margin="0,10,0,0"
+                                       Foreground="#9CA3AF"
+                                       Text="Module relative"/>
+                            <TextBlock x:Name="ResolvedRelativeText"
+                                       Margin="0,4,0,0"
+                                       FontFamily="Consolas"
+                                       Foreground="White"
+                                       Text="-"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                Height="34"
+                                Click="ReadResolvedInt32_Click"
+                                Content="Read Int32"/>
+                        <Button Grid.Column="2"
+                                Height="34"
+                                Click="ReadResolvedFloat_Click"
+                                Content="Read Float"/>
+                    </Grid>
+
+                    <TextBlock x:Name="ResolvedValueText"
+                               Margin="0,10,0,0"
+                               FontFamily="Consolas"
+                               Foreground="#E5E7EB"
+                               Text="Value: -"/>
+
+                    <Button Margin="0,12,0,0"
+                            Height="34"
+                            Click="SaveResolvedPointer_Click"
+                            Content="Save Resolved Pointer to Address List"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Padding="14"
+                    CornerRadius="10"
+                    Background="#171A21"
+                    BorderBrush="#2B303B"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Address Representation"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Margin="0,12,0,0"
+                               Foreground="#9CA3AF"
+                               Text="Absolute address"/>
+                    <TextBox x:Name="AddressTextBox"
+                             Margin="0,5,0,10"
+                             Height="34"
+                             Padding="8,6"
+                             FontFamily="Consolas"
+                             Text="0x0000000000000000"/>
+
+                    <Button Height="34"
+                            Click="ConvertAddress_Click"
+                            Content="Convert to Module + Offset"/>
+
+                    <Border Margin="0,12,0,0"
+                            Padding="12"
+                            CornerRadius="8"
+                            Background="#11141A"
+                            BorderBrush="#2B303B"
+                            BorderThickness="1">
+                        <TextBlock x:Name="ModuleRelativeText"
+                                   FontFamily="Consolas"
+                                   Foreground="White"
+                                   Text="-"
+                                   TextWrapping="Wrap"/>
+                    </Border>
+
+                    <Separator Margin="0,18,0,18"
+                               Background="#2B303B"/>
+
+                    <TextBlock Text="Basic One-Level Pointer Scan"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Margin="0,10,0,0"
+                               Foreground="#9CA3AF"
+                               Text="Target address"/>
+                    <TextBox x:Name="PointerTargetTextBox"
+                             Margin="0,5,0,10"
+                             Height="34"
+                             Padding="8,6"
+                             FontFamily="Consolas"
+                             Text="0x0000000000000000"/>
+
+                    <TextBlock Foreground="#9CA3AF"
+                               Text="Maximum offset (hex)"/>
+                    <TextBox x:Name="MaxOffsetTextBox"
+                             Margin="0,5,0,10"
+                             Height="34"
+                             Padding="8,6"
+                             FontFamily="Consolas"
+                             Text="0x1000"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="PointerScanButton"
+                                Grid.Column="0"
+                                Height="36"
+                                Click="PointerScan_Click"
+                                Content="Pointer Scan"/>
+
+                        <Button x:Name="CancelPointerScanButton"
+                                Grid.Column="2"
+                                Height="36"
+                                Click="CancelPointerScan_Click"
+                                IsEnabled="False"
+                                Content="Cancel"/>
+                    </Grid>
+
+                    <ProgressBar x:Name="PointerScanProgressBar"
+                                 Margin="0,12,0,0"
+                                 Height="8"
+                                 Minimum="0"
+                                 Maximum="100"/>
+
+                    <TextBlock x:Name="PointerScanInfoText"
+                               Margin="0,7,0,0"
+                               Foreground="#9CA3AF"
+                               Text="Ready."/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="4"
+                Padding="12"
+                CornerRadius="10"
+                Background="#171A21"
+                BorderBrush="#2B303B"
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel>
+                    <TextBlock Text="Pointer Scan Results"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+                    <TextBlock x:Name="PointerResultCountText"
+                               DockPanel.Dock="Right"
+                               Foreground="#9CA3AF"
+                               Text="0 results"/>
+                </DockPanel>
+
+                <DataGrid x:Name="PointerResultsGrid"
+                          Grid.Row="2"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          Background="#11141A"
+                          Foreground="#E5E7EB"
+                          BorderBrush="#2B303B"
+                          RowBackground="#11141A"
+                          AlternatingRowBackground="#151922"
+                          CanUserAddRows="False"
+                          FontFamily="Consolas">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Pointer Location"
+                                            Binding="{Binding PointerLocation}"
+                                            Width="*"/>
+                        <DataGridTextColumn Header="Pointer Address"
+                                            Binding="{Binding PointerAddressText}"
+                                            Width="190"/>
+                        <DataGridTextColumn Header="Points To"
+                                            Binding="{Binding PointerValueText}"
+                                            Width="190"/>
+                        <DataGridTextColumn Header="Offset"
+                                            Binding="{Binding OffsetText}"
+                                            Width="110"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="6"
+                Padding="10"
+                CornerRadius="8"
+                Background="#171A21"
+                BorderBrush="#2B303B"
+                BorderThickness="1">
+            <TextBlock x:Name="StatusText"
+                       Foreground="#9CA3AF"
+                       Text="Ready."/>
+        </Border>
+    </Grid>
+</Window>

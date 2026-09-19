@@ -1,0 +1,203 @@
+<Window x:Class="MemoryLab.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MemoryLab"
+        Width="980"
+        Height="640"
+        MinWidth="840"
+        MinHeight="540"
+        WindowStartupLocation="CenterScreen"
+        Background="#0F1115">
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Padding="16"
+                CornerRadius="12"
+                Background="#171A21"
+                BorderBrush="#2B303B"
+                BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="MemoryLab"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="SemiBold"/>
+                    <TextBlock Text="Phase 1 — Process &amp; Memory Access"
+                               Margin="0,4,0,0"
+                               Foreground="#9CA3AF"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Width="110"
+                        Height="36"
+                        Margin="12,0,0,0"
+                        Click="RefreshProcesses_Click"
+                        Content="Refresh"/>
+
+                <Button Grid.Column="2"
+                        Width="110"
+                        Height="36"
+                        Margin="10,0,0,0"
+                        Click="Attach_Click"
+                        Content="Attach"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Padding="14"
+                    CornerRadius="12"
+                    Background="#171A21"
+                    BorderBrush="#2B303B"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel>
+                        <TextBlock Text="Processes"
+                                   Foreground="White"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock x:Name="ProcessCountText"
+                                   DockPanel.Dock="Right"
+                                   Foreground="#9CA3AF"
+                                   HorizontalAlignment="Right"/>
+                    </DockPanel>
+
+                    <DataGrid x:Name="ProcessGrid"
+                              Grid.Row="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column"
+                              Background="#11141A"
+                              Foreground="#E5E7EB"
+                              BorderBrush="#2B303B"
+                              GridLinesVisibility="Horizontal"
+                              RowBackground="#11141A"
+                              AlternatingRowBackground="#151922"
+                              CanUserAddRows="False"
+                              SelectionChanged="ProcessGrid_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Process"
+                                                Binding="{Binding Name}"
+                                                Width="1.2*"/>
+                            <DataGridTextColumn Header="PID"
+                                                Binding="{Binding Id}"
+                                                Width="90"/>
+                            <DataGridTextColumn Header="Window"
+                                                Binding="{Binding Title}"
+                                                Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Padding="14"
+                    CornerRadius="12"
+                    Background="#171A21"
+                    BorderBrush="#2B303B"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Attached Process"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock x:Name="AttachedText"
+                               Margin="0,10,0,18"
+                               Text="Not attached"
+                               Foreground="#9CA3AF"
+                               TextWrapping="Wrap"/>
+
+                    <Separator Margin="0,0,0,18"
+                               Background="#2B303B"/>
+
+                    <TextBlock Text="Manual Memory Read"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Margin="0,12,0,5"
+                               Foreground="#9CA3AF"
+                               Text="Address (hex)"/>
+                    <TextBox x:Name="AddressTextBox"
+                             Height="34"
+                             Padding="8,6"
+                             Text="0x0000000000000000"/>
+
+                    <TextBlock Margin="0,12,0,5"
+                               Foreground="#9CA3AF"
+                               Text="Data type"/>
+                    <ComboBox x:Name="ValueTypeComboBox"
+                              Height="34"
+                              SelectedIndex="0">
+                        <ComboBoxItem Content="Int32"/>
+                        <ComboBoxItem Content="Float"/>
+                        <ComboBoxItem Content="Bytes (16)"/>
+                    </ComboBox>
+
+                    <Button Height="36"
+                            Margin="0,14,0,0"
+                            Click="ReadMemory_Click"
+                            Content="Read Memory"/>
+
+                    <Border Margin="0,14,0,0"
+                            Padding="12"
+                            Background="#11141A"
+                            BorderBrush="#2B303B"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                        <StackPanel>
+                            <TextBlock Text="Result"
+                                       Foreground="#9CA3AF"/>
+                            <TextBlock x:Name="MemoryResultText"
+                                       Margin="0,5,0,0"
+                                       FontFamily="Consolas"
+                                       FontSize="15"
+                                       Foreground="White"
+                                       Text="-"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="4"
+                Padding="10"
+                CornerRadius="8"
+                Background="#171A21"
+                BorderBrush="#2B303B"
+                BorderThickness="1">
+            <TextBlock x:Name="StatusText"
+                       Foreground="#9CA3AF"
+                       Text="Ready."/>
+        </Border>
+    </Grid>
+</Window>

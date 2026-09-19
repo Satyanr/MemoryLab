@@ -11,6 +11,7 @@ F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\MemoryViewerWindow.baml
 F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\PointerToolsWindow.baml
 F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\ProjectSettingsWindow.baml
 F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\RecentProjectsWindow.baml
+F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\App.baml
 F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\AboutWindow.g.cs
 F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\AppSettingsWindow.g.cs
 F:\Program Project\MemoryLab\obj\Debug\net8.0-windows\EditValueWindow.g.cs

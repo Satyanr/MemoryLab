@@ -1,0 +1,15 @@
+F:\Program Project\MemoryLab\TestTarget\bin\Debug\net8.0\MemoryLab.TestTarget.exe
+F:\Program Project\MemoryLab\TestTarget\bin\Debug\net8.0\MemoryLab.TestTarget.deps.json
+F:\Program Project\MemoryLab\TestTarget\bin\Debug\net8.0\MemoryLab.TestTarget.runtimeconfig.json
+F:\Program Project\MemoryLab\TestTarget\bin\Debug\net8.0\MemoryLab.TestTarget.dll
+F:\Program Project\MemoryLab\TestTarget\bin\Debug\net8.0\MemoryLab.TestTarget.pdb
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.GeneratedMSBuildEditorConfig.editorconfig
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.AssemblyInfoInputs.cache
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.AssemblyInfo.cs
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.csproj.CoreCompileInputs.cache
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.sourcelink.json
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.dll
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\refint\MemoryLab.TestTarget.dll
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.pdb
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\MemoryLab.TestTarget.genruntimeconfig.cache
+F:\Program Project\MemoryLab\TestTarget\obj\Debug\net8.0\ref\MemoryLab.TestTarget.dll

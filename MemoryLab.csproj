@@ -21,4 +21,8 @@
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="TestTarget\**\*.cs" />
+  </ItemGroup>
+
 </Project>

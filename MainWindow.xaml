@@ -45,7 +45,7 @@
                                Foreground="White"
                                FontSize="24"
                                FontWeight="SemiBold"/>
-                    <TextBlock Text="Memory Scanner & Debugging Toolkit • v1.0"
+                    <TextBlock Text="Memory Scanner &amp; Debugging Toolkit • v1.0"
                                Margin="0,4,0,0"
                                Foreground="#9CA3AF"/>
                     <TextBlock x:Name="ProjectStatusText"

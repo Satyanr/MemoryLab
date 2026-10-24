@@ -17,6 +17,7 @@ public partial class MainWindow : Window
     private readonly MemoryService _memoryService = new();
     private readonly MemoryScanner _scanner;
     private readonly ProjectService _projectService = new();
+    private readonly CheatTableImportService _cheatTableImportService = new();
     private readonly RecentProjectService _recentProjectService = new();
     private readonly AppSettingsService _appSettingsService = new();
     private AppSettings _appSettings = new();
@@ -36,6 +37,7 @@ public partial class MainWindow : Window
     private bool _hasScanSnapshot;
     private bool _refreshBusy;
     private bool _refreshingProcesses;
+    private bool _importBusy;
     private DateTime _lastProcessHealthCheckUtc = DateTime.MinValue;
 
     public MainWindow()
@@ -96,7 +98,7 @@ public partial class MainWindow : Window
 
         _refreshingProcesses = true;
         RefreshGamesButton.IsEnabled = false;
-        RefreshGamesButton.Content = "Refreshing...";
+        RefreshGamesButton.ToolTip = "Refreshing games...";
 
         try
         {
@@ -122,7 +124,7 @@ public partial class MainWindow : Window
         finally
         {
             _refreshingProcesses = false;
-            RefreshGamesButton.Content = "Refresh";
+            RefreshGamesButton.ToolTip = "Refresh running games";
             RefreshGamesButton.IsEnabled = _scanCancellation is null;
         }
     }
@@ -559,14 +561,82 @@ public partial class MainWindow : Window
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Open MemoryLab Project",
-            Filter = "MemoryLab Project (*.mlab.json)|*.mlab.json|JSON (*.json)|*.json|All files (*.*)|*.*"
+            Title = "Open MemoryLab Project or Cheat Engine Table",
+            Filter = "Supported files (*.mlab.json;*.CT)|*.mlab.json;*.CT|MemoryLab Project (*.mlab.json)|*.mlab.json|Cheat Engine table (*.CT)|*.CT|JSON (*.json)|*.json|All files (*.*)|*.*"
         };
 
         if (dialog.ShowDialog(this) != true)
             return;
 
-        await LoadProjectAsync(dialog.FileName);
+        if (Path.GetExtension(dialog.FileName).Equals(".CT", StringComparison.OrdinalIgnoreCase))
+            await ImportCheatTableWithReportAsync(dialog.FileName);
+        else
+            await LoadProjectAsync(dialog.FileName);
+    }
+
+    private async void ImportCheatTable_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Import Cheat Engine Table",
+            Filter = "Cheat Engine table (*.CT)|*.CT",
+            DefaultExt = ".CT"
+        };
+        if (dialog.ShowDialog(this) == true)
+            await ImportCheatTableWithReportAsync(dialog.FileName);
+    }
+
+    private async Task ImportCheatTableWithReportAsync(string filePath)
+    {
+        try
+        {
+            var result = await ImportCheatTableAsync(filePath);
+            var details = result.Summary + "\n\nAlamat ditambahkan ke Saved addresses. Attach ke game untuk membaca nilai, lalu Save untuk menyimpan sebagai .mlab.json.";
+            if (result.SkippedEntries.Count > 0)
+            {
+                details += "\n\nEntri yang dilewati:\n" + string.Join("\n", result.SkippedEntries.Take(10));
+                if (result.SkippedEntries.Count > 10)
+                    details += $"\n... dan {result.SkippedEntries.Count - 10:N0} entri lainnya.";
+            }
+            if (result.HasTableLua)
+                details += "\n\nTabel memiliki LuaScript yang belum didukung dan tidak dijalankan.";
+            MessageBox.Show(this, details, "Import Cheat Engine Table", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex);
+        }
+    }
+
+    internal async Task<CheatTableImportResult> ImportCheatTableAsync(string filePath)
+    {
+        if (_importBusy)
+            throw new InvalidOperationException("Impor tabel masih berlangsung.");
+        _importBusy = true;
+        ImportCheatTableMenuItem.IsEnabled = false;
+        try
+        {
+            var result = await Task.Run(() => _cheatTableImportService.ImportAsync(filePath));
+            if (result.Entries.Count > 0)
+            {
+                if (_addressEntries.Count == 0 && _currentProjectPath is null)
+                    _projectName = result.TableName;
+                if (string.IsNullOrWhiteSpace(_projectProcessName))
+                    _projectProcessName = result.ProcessName;
+                foreach (var entry in result.Entries)
+                    _addressEntries.Add(entry);
+                RefreshSavedAddressValues();
+                UpdateAddressCount();
+                UpdateProjectStatus();
+            }
+            StatusText.Text = $"{Path.GetFileName(filePath)}: {result.Summary}";
+            return result;
+        }
+        finally
+        {
+            _importBusy = false;
+            ImportCheatTableMenuItem.IsEnabled = true;
+        }
     }
 
     private async void SaveProject_Click(
@@ -607,7 +677,7 @@ public partial class MainWindow : Window
             $"Project saved: {_currentProjectPath}";
     }
 
-    private ProjectFile BuildProjectFile()
+    internal ProjectFile BuildProjectFile()
     {
         var project = new ProjectFile
         {
@@ -768,11 +838,12 @@ public partial class MainWindow : Window
         if (!_memoryService.AttachedProcessId.HasValue)
             return;
 
+        var moduleBases = new Dictionary<string, nuint>(StringComparer.OrdinalIgnoreCase);
         foreach (var entry in _addressEntries)
         {
             try
             {
-                ResolveSavedEntryAddress(entry);
+                ResolveSavedEntryAddress(entry, moduleBases);
 
                 entry.Value =
                     _memoryService.ReadValueAsString(
@@ -789,112 +860,28 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ResolveSavedEntryAddress(AddressEntry entry)
+    private void ResolveSavedEntryAddress(AddressEntry entry, Dictionary<string, nuint>? moduleBases = null)
     {
         if (!_memoryService.AttachedProcessId.HasValue)
             return;
 
-        var processId =
-            _memoryService.AttachedProcessId.Value;
-
-        if (string.Equals(
-                entry.AddressKind,
-                "ModuleOffset",
-                StringComparison.OrdinalIgnoreCase))
-        {
-            var parts =
-                entry.AddressExpression.Split(
-                    '+',
-                    2,
-                    StringSplitOptions.TrimEntries);
-
-            if (parts.Length != 2)
-                throw new FormatException(
-                    "Module+offset expression tidak valid.");
-
-            var module =
-                _processService.FindModuleByName(
-                    processId,
-                    parts[0])
-                ?? throw new InvalidOperationException(
-                    $"Module '{parts[0]}' tidak ditemukan.");
-
-            var offset = ParseHexExpression(parts[1]);
-            entry.Address = checked(module.BaseAddress + offset);
-            entry.NotifyAddressChanged();
+        var processId = _memoryService.AttachedProcessId.Value;
+        var address = AddressExpressionService.Resolve(entry, FindModuleBase, _memoryService.ReadPointer);
+        if (address == entry.Address)
             return;
-        }
+        entry.Address = address;
+        entry.NotifyAddressChanged();
 
-        if (string.Equals(
-                entry.AddressKind,
-                "PointerChain",
-                StringComparison.OrdinalIgnoreCase))
+        nuint FindModuleBase(string moduleName)
         {
-            var parts =
-                entry.AddressExpression.Split('|');
-
-            if (parts.Length != 3)
-                throw new FormatException(
-                    "Pointer expression tidak valid.");
-
-            var module =
-                _processService.FindModuleByName(
-                    processId,
-                    parts[0])
-                ?? throw new InvalidOperationException(
-                    $"Module '{parts[0]}' tidak ditemukan.");
-
-            var baseOffset =
-                ParseHexExpression(parts[1]);
-
-            var offsets =
-                string.IsNullOrWhiteSpace(parts[2])
-                    ? Array.Empty<nuint>()
-                    : parts[2]
-                        .Split(
-                            ',',
-                            StringSplitOptions.RemoveEmptyEntries |
-                            StringSplitOptions.TrimEntries)
-                        .Select(ParseHexExpression)
-                        .ToArray();
-
-            var resolver =
-                new PointerResolverService(
-                    _memoryService,
-                    _processService);
-
-            entry.Address =
-                resolver.ResolvePointerChain(
-                    module.BaseAddress,
-                    baseOffset,
-                    offsets);
-
-            entry.NotifyAddressChanged();
+            if (moduleBases is not null && moduleBases.TryGetValue(moduleName, out var cached))
+                return cached;
+            var moduleBase = _processService.FindModuleByName(processId, moduleName)?.BaseAddress
+                ?? throw new InvalidOperationException($"Module '{moduleName}' tidak ditemukan.");
+            if (moduleBases is not null)
+                moduleBases[moduleName] = moduleBase;
+            return moduleBase;
         }
-    }
-
-    private static nuint ParseHexExpression(string raw)
-    {
-        raw = raw.Trim();
-
-        if (raw.StartsWith(
-                "0x",
-                StringComparison.OrdinalIgnoreCase))
-        {
-            raw = raw[2..];
-        }
-
-        if (!ulong.TryParse(
-                raw,
-                NumberStyles.AllowHexSpecifier,
-                CultureInfo.InvariantCulture,
-                out var value))
-        {
-            throw new FormatException(
-                "Hex expression tidak valid.");
-        }
-
-        return checked((nuint)value);
     }
 
     private void UpdateProjectStatus()
@@ -1268,6 +1255,7 @@ public partial class MainWindow : Window
             if (dialog.ShowDialog() != true)
                 return;
 
+            ResolveSavedEntryAddress(entry);
             _memoryService.WriteValueFromString(
                 entry.Address,
                 entry.ValueType,
@@ -1367,10 +1355,12 @@ public partial class MainWindow : Window
 
             await Task.Run(() =>
             {
+                var moduleBases = new Dictionary<string, nuint>(StringComparer.OrdinalIgnoreCase);
                 foreach (var entry in snapshot)
                 {
                     try
                     {
+                        ResolveSavedEntryAddress(entry, moduleBases);
                         if (entry.IsFrozen)
                         {
                             _memoryService.WriteValueFromString(

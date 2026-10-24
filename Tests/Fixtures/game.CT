@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="45">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Player &amp; stats"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"Health"</Description>
+          <LastState Value="999" Activated="1" RealAddress="DEADBEEF" />
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"game.exe"+1234</Address>
+          <Offsets><Offset>10</Offset><Offset>-20</Offset></Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <Description>"Movement"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <Description>"Speed"</Description>
+              <VariableType>Float</VariableType>
+              <Address>"game.exe"-20</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <Description>"Counter"</Description>
+      <VariableType>8 Bytes</VariableType>
+      <Address>0x7FF000001234</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <Description>"Absolute pointer"</Description>
+      <VariableType>Double</VariableType>
+      <Address>1000</Address>
+      <Offsets><Offset>8</Offset></Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <Description>"Enable script"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+// unsupported script
+[DISABLE]</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <Description>"Symbol health"</Description>
+          <VariableType>Float</VariableType>
+          <Address>playerHealth</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <Description>"Independent child"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>1234</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <Description>"Player name"</Description>
+      <VariableType>String</VariableType>
+      <Address>2000</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <Description>"Invalid offset"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>3000</Address>
+      <Offsets><Offset>not-an-offset</Offset></Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <Description>"Unsigned word"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>4000</Address>
+    </CheatEntry>
+  </CheatEntries>
+  <LuaScript>error('Table scripts must never run while importing')</LuaScript>
+</CheatTable>

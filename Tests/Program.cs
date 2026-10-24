@@ -18,8 +18,9 @@ internal static class Program
         {
             CheckFiltering();
             CheckLiveDiscovery();
+            CheatTableImportChecks.Run();
             CheckLayout(args.Contains("--preview"));
-            Console.WriteLine("PASS: game filtering, live discovery, and WPF layout checks.");
+            Console.WriteLine("PASS: game filtering, CT import, live discovery, and WPF layout checks.");
             return 0;
         }
         catch (Exception exception)
@@ -160,12 +161,45 @@ internal static class Program
 
         picker.SelectedIndex = -1;
         Assert(!attach.IsEnabled && prompt.Visibility == Visibility.Visible, "clearing selection resets attach");
+        CheckImportUi(window);
         window.Close();
         app.Shutdown();
     }
 
-    private static void DrainDispatcher() =>
-        Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
+    private static void CheckImportUi(MainWindow window)
+    {
+        var menu = (MenuItem)window.FindName("ImportCheatTableMenuItem");
+        Assert(menu.IsEnabled && menu.Header.ToString()!.Contains(".CT"), "CT import action is available");
+        for (var count = 1; count <= 2; count++)
+        {
+            var import = window.Dispatcher.InvokeAsync(
+                () => window.ImportCheatTableAsync(CheatTableImportChecks.FixturePath)).Task.Unwrap();
+            var timeout = Stopwatch.StartNew();
+            while (!import.IsCompleted && timeout.Elapsed < TimeSpan.FromSeconds(10))
+            {
+                DrainDispatcher();
+                Thread.Sleep(10);
+            }
+            if (import.IsFaulted)
+                import.GetAwaiter().GetResult();
+            Assert(import.IsCompletedSuccessfully, $"UI import completes ({import.Status})");
+            var grid = (DataGrid)window.FindName("AddressGrid");
+            Assert(grid.Items.Count == import.Result.Entries.Count * count, "import appends to existing addresses");
+        }
+        var project = window.BuildProjectFile();
+        Assert(project.ProjectName == "game" && project.ProcessName == "game", "new imported project metadata");
+        Assert(project.Addresses[0].AddressExpression == "game.exe|0x1234|-0x20,0x10", "UI save retains pointer definition");
+        Assert(menu.IsEnabled, "import action re-enables after completion");
+        Console.WriteLine("PASS: WPF import action, append behavior, and project metadata.");
+    }
+
+    private static void DrainDispatcher()
+    {
+        var frame = new DispatcherFrame();
+        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
+            new Action(() => frame.Continue = false));
+        Dispatcher.PushFrame(frame);
+    }
 
     private static void Assert(bool condition, string message)
     {

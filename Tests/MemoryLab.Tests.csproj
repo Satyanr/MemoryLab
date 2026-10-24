@@ -9,5 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MemoryLab.csproj" />
+    <None Update="Fixtures\*.CT" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

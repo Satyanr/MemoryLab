@@ -493,3 +493,5 @@ F:\Program Project\MemoryLab\obj\Release\net8.0-windows\win-x64\refint\MemoryLab
 F:\Program Project\MemoryLab\obj\Release\net8.0-windows\win-x64\MemoryLab.pdb
 F:\Program Project\MemoryLab\obj\Release\net8.0-windows\win-x64\MemoryLab.genruntimeconfig.cache
 F:\Program Project\MemoryLab\obj\Release\net8.0-windows\win-x64\ref\MemoryLab.dll
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\win-x64\Assets\Brand\LogoDrawing.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\win-x64\Assets\Icons\Icons.baml

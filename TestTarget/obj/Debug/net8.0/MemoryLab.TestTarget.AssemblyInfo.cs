@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MemoryLab.TestTarget")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6cd8bec28087d2a4278c015c5fcd6a1bc3d475c5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+720191caf0f44c5be13850da9f94f6578bf5948d")]
 [assembly: System.Reflection.AssemblyProductAttribute("MemoryLab.TestTarget")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MemoryLab.TestTarget")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

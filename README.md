@@ -2,6 +2,51 @@
 
 Phase 8 adalah build kumulatif final dari roadmap awal MemoryLab.
 
+<p><img src="Assets/Brand/MemoryLab.png" width="88" height="88" alt="MemoryLab logo: memory chip with an M" /></p>
+
+## Install untuk pengguna Windows
+
+1. Download ZIP repo ini, lalu **Extract All** terlebih dahulu.
+2. Klik dua kali **`Install-MemoryLab.cmd`** di folder utama, atau buka
+   [MemoryLab-Setup-1.0.0-x64.exe](Installer/MemoryLab-Setup-1.0.0-x64.exe) di folder `Installer`.
+3. Ikuti wizard dan biarkan **Create a desktop shortcut** tercentang.
+4. Setelah selesai, buka **MemoryLab** dari shortcut desktop atau Start Menu.
+
+Installer menyertakan runtime .NET; pengguna tidak perlu menginstal .NET atau menjalankan source code.
+Target: Windows 10/11 x64. Instalasi dilakukan untuk pengguna saat ini di
+`%LOCALAPPDATA%\Programs\MemoryLab`, tanpa meminta hak administrator.
+Uninstall tersedia melalui Windows **Settings > Apps > Installed apps > MemoryLab > Uninstall**.
+Project dan pengaturan pengguna tidak dihapus oleh uninstaller.
+
+**Untuk pemilik repo:** sertakan file `Installer/MemoryLab-Setup-1.0.0-x64.exe` dan `.sha256`
+saat commit/push agar ikut tersedia di ZIP repo. Installer di workspace belum otomatis terunggah ke GitHub.
+File installer juga dapat dibagikan sendiri; pengguna tidak perlu mengunduh seluruh source.
+
+## Membuat ulang installer
+
+Prasyarat untuk pembuat installer: Windows, .NET 8 SDK, dan internet saat menyiapkan compiler pertama kali.
+Jalankan di folder repo:
+
+```powershell
+.\Build-Installer.cmd
+```
+
+Script akan membuat ulang logo/ikon, menjalankan tes aplikasi, memperbarui build Release dan publish,
+lalu membuat `Installer/MemoryLab-Setup-<Version>-x64.exe` beserta checksum SHA-256.
+Versi diambil dari `MemoryLab.csproj`. Compiler [Inno Setup](https://jrsoftware.org/isinfo.php)
+diunduh dari rilis resmi dengan versi dan SHA-256 yang dipatok, lalu disiapkan secara portable di `.tools`.
+Hasil build lokal belum ditandatangani secara digital.
+
+Untuk menguji install, reinstall, shortcut, dan uninstall di folder terisolasi:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Test-Installer.ps1
+```
+
+Pengujian ini memakai `Installer/TestOutput`, tanpa membuat shortcut desktop atau entri uninstall sungguhan.
+Source logo vektor berada di `Assets/Brand/LogoDrawing.xaml`; PNG, ICO multi-resolusi, dan gambar wizard
+dibuat ulang oleh `scripts/Build-BrandAssets.ps1`. Ikon aksi berada di `Assets/Icons/Icons.xaml`.
+
 
 ## Core features
 
@@ -57,6 +102,7 @@ Phase 8 adalah build kumulatif final dari roadmap awal MemoryLab.
 
 ### Project system
 - save/load `*.mlab.json`
+- import Cheat Engine XML tables (`*.CT`)
 - project name
 - target process name
 - Address List persistence
@@ -67,6 +113,29 @@ Phase 8 adalah build kumulatif final dari roadmap awal MemoryLab.
 - pointer-chain auto re-resolution
 
 ## New in Phase 8
+
+### Import Cheat Engine tables
+
+Use `Project > Import Cheat Engine table (.CT)...` and choose a file such as `game.CT`.
+`Open project` (Ctrl+O) also accepts `.CT` files. Import appends addresses to the current list;
+use `New project` first when you want a separate project. Attach to the game to read live values,
+then use `Save` to store the imported list as a MemoryLab `.mlab.json` project.
+
+Supported entries include Byte, 2/4/8 Bytes (signed or unsigned), Float, Double, absolute hex
+addresses, module-relative addresses, and pointer chains with signed hex offsets. Descriptions
+and nested groups are preserved. Pointer offsets follow Cheat Engine's reverse XML order,
+and pointers are resolved again during live refresh and before editing/freezing a value.
+Pointer reads use the attached target's 32-bit or 64-bit width. Numeric values display in decimal.
+
+The import summary reports skipped entries. Lua/Auto Assembler scripts, script-defined symbols,
+relative child addresses, String, Array of byte, Binary/custom types, hotkeys, dropdown labels,
+and compressed tables are not imported. Table scripts are not executed; entries start unfrozen.
+Saved `LastState` values and resolved addresses are ignored. Supported children of unsupported
+entries are still imported when they have independent addresses. An unambiguous `.exe` module
+can fill an empty project target; the importer does not infer a process from the table filename.
+
+The XML and pointer ordering are based on
+[Cheat Engine's memory record implementation](https://github.com/cheat-engine/cheat-engine/blob/master/Cheat%20Engine/MemoryRecordUnit.pas).
 
 ### Recent Projects UI
 
@@ -198,7 +267,7 @@ dotnet build
 dotnet run
 ```
 
-Run filter, live-discovery, and layout checks (no extra test packages):
+Run filter, CT import, numeric memory, live-discovery, and layout checks (no extra test packages):
 
 ```powershell
 dotnet run --project Tests/MemoryLab.Tests.csproj

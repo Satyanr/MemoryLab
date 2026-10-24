@@ -33,3 +33,5 @@ F:\Program Project\MemoryLab\obj\Release\net8.0-windows\refint\MemoryLab.dll
 F:\Program Project\MemoryLab\obj\Release\net8.0-windows\MemoryLab.pdb
 F:\Program Project\MemoryLab\obj\Release\net8.0-windows\MemoryLab.genruntimeconfig.cache
 F:\Program Project\MemoryLab\obj\Release\net8.0-windows\ref\MemoryLab.dll
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\Assets\Brand\LogoDrawing.baml
+F:\Program Project\MemoryLab\obj\Release\net8.0-windows\Assets\Icons\Icons.baml

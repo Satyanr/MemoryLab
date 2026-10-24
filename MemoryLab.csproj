@@ -17,6 +17,7 @@
     <FileVersion>1.0.0.0</FileVersion>
     <Product>MemoryLab</Product>
     <Description>Windows memory inspection and debugging lab for owned/test applications.</Description>
+    <ApplicationIcon>Assets\Brand\MemoryLab.ico</ApplicationIcon>
 
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
@@ -25,6 +26,7 @@
     <Compile Remove="TestTarget\**\*.cs" />
     <Compile Remove="Tests\**\*.cs" />
     <InternalsVisibleTo Include="MemoryLab.Tests" />
+    <Resource Include="Assets\Brand\MemoryLab.ico" />
   </ItemGroup>
 
 </Project>

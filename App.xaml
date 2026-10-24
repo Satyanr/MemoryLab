@@ -4,6 +4,11 @@
              StartupUri="MainWindow.xaml">
 
         <Application.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="Assets/Brand/LogoDrawing.xaml"/>
+                    <ResourceDictionary Source="Assets/Icons/Icons.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
 
                 <!-- ========================= -->
                 <!-- COLORS -->
@@ -51,6 +56,7 @@
                 <!-- ========================= -->
 
                 <Style TargetType="{x:Type Window}">
+                        <Setter Property="Icon" Value="/MemoryLab;component/Assets/Brand/MemoryLab.ico"/>
                         <Setter Property="FontFamily"
                                 Value="Segoe UI"/>
                         <Setter Property="FontSize"
@@ -860,6 +866,7 @@
 
                 </Style>
 
+            </ResourceDictionary>
         </Application.Resources>
 
 </Application>

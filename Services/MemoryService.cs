@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using MemoryLab.Models;
 using MemoryLab.Native;
@@ -12,6 +11,7 @@ public sealed class MemoryService : IDisposable
 
     public int? AttachedProcessId { get; private set; }
     public bool IsAttached => _processHandle != IntPtr.Zero;
+    public int PointerSize { get; private set; } = sizeof(ulong);
 
     public void Attach(int processId)
     {
@@ -31,6 +31,14 @@ public sealed class MemoryService : IDisposable
             throw new Win32Exception(error, "Gagal membuka process.");
         }
 
+        if (!NativeMethods.IsWow64Process(_processHandle, out var wow64))
+        {
+            var error = Marshal.GetLastWin32Error();
+            Detach();
+            throw new Win32Exception(error, "Gagal mendeteksi ukuran pointer process.");
+        }
+
+        PointerSize = wow64 ? sizeof(uint) : sizeof(ulong);
         AttachedProcessId = processId;
     }
 
@@ -217,37 +225,20 @@ public sealed class MemoryService : IDisposable
 
     public string ReadValueAsString(nuint address, string valueType)
     {
-        return valueType switch
-        {
-            "Int32" => ReadInt32(address).ToString(CultureInfo.InvariantCulture),
-            "Float" => ReadFloat(address).ToString("G9", CultureInfo.InvariantCulture),
-            _ => throw new NotSupportedException($"Value type '{valueType}' belum didukung.")
-        };
+        return MemoryValueCodec.Decode(ReadBytes(address, MemoryValueCodec.GetSize(valueType)), valueType);
     }
 
     public void WriteValueFromString(nuint address, string valueType, string rawValue)
     {
-        rawValue = rawValue.Trim();
+        WriteBytes(address, MemoryValueCodec.Encode(rawValue, valueType));
+    }
 
-        switch (valueType)
-        {
-            case "Int32":
-                if (!int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue))
-                    throw new FormatException("Nilai Int32 tidak valid.");
-
-                WriteInt32(address, intValue);
-                break;
-
-            case "Float":
-                if (!float.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var floatValue))
-                    throw new FormatException("Nilai Float tidak valid. Gunakan format seperti 12.5.");
-
-                WriteFloat(address, floatValue);
-                break;
-
-            default:
-                throw new NotSupportedException($"Value type '{valueType}' belum didukung.");
-        }
+    public ulong ReadPointer(nuint address)
+    {
+        var bytes = ReadBytes(address, PointerSize);
+        if (bytes.Length != PointerSize)
+            throw new InvalidOperationException("Jumlah byte pointer yang terbaca tidak lengkap.");
+        return PointerSize == sizeof(uint) ? BitConverter.ToUInt32(bytes) : BitConverter.ToUInt64(bytes);
     }
 
 

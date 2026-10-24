@@ -38,11 +38,18 @@
 
         <DockPanel Grid.Row="0" LastChildFill="True">
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Height="34" Margin="0,0,8,0" Content="Project &#x25BE;" Click="OpenActionsMenu_Click">
+                <Button Height="34" Margin="0,0,8,0" Click="OpenActionsMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource ProjectIcon}" Width="14" Height="14" Margin="0,0,7,0"/>
+                        <TextBlock Text="Project &#x25BE;"/>
+                    </StackPanel>
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="New project" InputGestureText="Ctrl+N" Click="NewProject_Click"/>
                             <MenuItem Header="Open project..." InputGestureText="Ctrl+O" Click="OpenProject_Click"/>
+                            <MenuItem x:Name="ImportCheatTableMenuItem" Header="Import Cheat Engine table (.CT)..." Click="ImportCheatTable_Click">
+                                <MenuItem.Icon><Image Source="{StaticResource ImportIcon}" Width="16" Height="16"/></MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Recent projects" Click="RecentProjects_Click"/>
                             <Separator/>
                             <MenuItem Header="Project settings" Click="ProjectSettings_Click"/>
@@ -50,8 +57,17 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
-                <Button Height="34" Margin="0,0,8,0" Content="Save" ToolTip="Save project (Ctrl+S)" Click="SaveProject_Click"/>
-                <Button Height="34" Content="Tools &#x25BE;" Click="OpenActionsMenu_Click">
+                <Button Height="34" Margin="0,0,8,0" ToolTip="Save project (Ctrl+S)" Click="SaveProject_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource SaveIcon}" Width="14" Height="14" Margin="0,0,7,0"/>
+                        <TextBlock Text="Save"/>
+                    </StackPanel>
+                </Button>
+                <Button Height="34" Click="OpenActionsMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource ToolsIcon}" Width="14" Height="14" Margin="0,0,7,0"/>
+                        <TextBlock Text="Tools &#x25BE;"/>
+                    </StackPanel>
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Pointer tools" Click="PointerTools_Click"/>
@@ -63,11 +79,15 @@
                     </Button.ContextMenu>
                 </Button>
             </StackPanel>
-            <StackPanel>
-                <TextBlock Text="MemoryLab" FontSize="23" FontWeight="SemiBold"/>
-                <TextBlock x:Name="ProjectStatusText" Margin="0,4,16,0" Foreground="#9CA3AF"
-                           Text="Unsaved project" TextTrimming="CharacterEllipsis"/>
-            </StackPanel>
+            <DockPanel LastChildFill="True">
+                <Image Source="{StaticResource MemoryLabLogo}" Width="46" Height="46" Margin="0,0,12,0"
+                       VerticalAlignment="Center" AutomationProperties.Name="MemoryLab logo"/>
+                <StackPanel>
+                    <TextBlock Text="MemoryLab" FontSize="23" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="ProjectStatusText" Margin="0,4,16,0" Foreground="#9CA3AF"
+                               Text="Unsaved project" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </DockPanel>
         </DockPanel>
 
         <Grid Grid.Row="2">
@@ -86,8 +106,10 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
                         <DockPanel LastChildFill="True">
-                            <Button x:Name="RefreshGamesButton" DockPanel.Dock="Right" Height="28" Padding="10,3"
-                                    Content="Refresh" Click="RefreshProcesses_Click"/>
+                            <Button x:Name="RefreshGamesButton" DockPanel.Dock="Right" Height="28" Width="32" Padding="6"
+                                    ToolTip="Refresh running games" AutomationProperties.Name="Refresh running games" Click="RefreshProcesses_Click">
+                                <Image Source="{StaticResource RefreshIcon}" Width="14" Height="14"/>
+                            </Button>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Text="Running games" Style="{StaticResource SectionTitle}"/>
                                 <TextBlock x:Name="ProcessCountText" Margin="8,0,0,0" Foreground="#9CA3AF" VerticalAlignment="Center" Text="0"/>
@@ -109,8 +131,13 @@
                             <TextBlock x:Name="NoGamesText" Foreground="#9CA3AF" VerticalAlignment="Center"
                                        Margin="10,0,36,0" IsHitTestVisible="False" Text="No games detected"/>
                         </Grid>
-                        <Button x:Name="AttachButton" Height="34" Content="Attach to game" IsEnabled="False"
-                                Background="#075985" BorderBrush="#0284C7" Click="Attach_Click"/>
+                        <Button x:Name="AttachButton" Height="34" IsEnabled="False"
+                                Background="#075985" BorderBrush="#0284C7" Click="Attach_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource AttachIcon}" Width="14" Height="14" Margin="0,0,7,0"/>
+                                <TextBlock Text="Attach to game"/>
+                            </StackPanel>
+                        </Button>
                         <TextBlock x:Name="AttachedText" Margin="0,8,0,16" Foreground="#9CA3AF"
                                    Text="No game attached" TextTrimming="CharacterEllipsis" TextWrapping="Wrap"/>
                         <Border Height="1" Background="#2B303B" Margin="0,0,0,14"/>
@@ -159,8 +186,13 @@
                                 <ColumnDefinition Width="8"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="FirstScanButton" Height="34" Content="First scan" Click="FirstScan_Click"
-                                    Background="#075985" BorderBrush="#0284C7"/>
+                            <Button x:Name="FirstScanButton" Height="34" Click="FirstScan_Click"
+                                    Background="#075985" BorderBrush="#0284C7">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource ScanIcon}" Width="14" Height="14" Margin="0,0,7,0"/>
+                                    <TextBlock Text="First scan"/>
+                                </StackPanel>
+                            </Button>
                             <Button x:Name="NextScanButton" Grid.Column="2" Height="34" Content="Next scan" Click="NextScan_Click" IsEnabled="False"/>
                         </Grid>
                         <Grid Margin="0,8,0,0">
@@ -237,7 +269,13 @@
                         <DataGridCheckBoxColumn Header="Freeze" Binding="{Binding IsFrozen, Mode=TwoWay}" Width="65"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding Description, Mode=TwoWay}" Width="*"/>
                         <DataGridTextColumn Header="Group" Binding="{Binding Group, Mode=TwoWay}" Width="110"/>
-                        <DataGridTextColumn Header="Address" Binding="{Binding AddressText}" IsReadOnly="True" Width="180"/>
+                        <DataGridTextColumn Header="Address" Binding="{Binding AddressText}" IsReadOnly="True" Width="180">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="ToolTip" Value="{Binding AddressExpression}"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Type" Binding="{Binding ValueType}" IsReadOnly="True" Width="70"/>
                         <DataGridTextColumn Header="Value" Binding="{Binding Value}" IsReadOnly="True" Width="120"/>
                     </DataGrid.Columns>

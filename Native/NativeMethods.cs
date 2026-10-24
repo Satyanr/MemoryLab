@@ -50,6 +50,12 @@ internal static class NativeMethods
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsWow64Process(
+        IntPtr processHandle,
+        [MarshalAs(UnmanagedType.Bool)] out bool wow64Process);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool ReadProcessMemory(
         IntPtr hProcess,
         IntPtr lpBaseAddress,

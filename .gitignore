@@ -1,0 +1,6 @@
+# Local build tools and installer verification outputs.
+[Bb]in/
+[Oo]bj/
+.tools/
+Installer/TestOutput/
+Installer/Staging/

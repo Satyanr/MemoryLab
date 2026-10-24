@@ -6,6 +6,8 @@ public sealed class ProcessItem
     public string Name { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
 
+    public string Details => $"{Name}.exe  ·  PID {Id}";
+
     public string DisplayName =>
         string.IsNullOrWhiteSpace(Title)
             ? $"{Name}.exe  (PID {Id})"

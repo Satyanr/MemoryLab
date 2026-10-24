@@ -6,7 +6,7 @@ Phase 8 adalah build kumulatif final dari roadmap awal MemoryLab.
 ## Core features
 
 ### Process & memory
-- Process list
+- Focused running-game picker
 - Attach process
 - OpenProcess
 - ReadProcessMemory
@@ -70,7 +70,7 @@ Phase 8 adalah build kumulatif final dari roadmap awal MemoryLab.
 
 ### Recent Projects UI
 
-Use the `Recent` button to open one of the last 10 projects.
+Use `Project > Recent projects` to open one of the last 10 projects.
 
 Paths are stored at:
 
@@ -80,7 +80,7 @@ Paths are stored at:
 
 ### Application Settings
 
-Use `Settings` to configure:
+Use `Tools > Settings` to configure:
 
 ```text
 Address List refresh: 100–5000 ms
@@ -96,7 +96,7 @@ Settings are stored at:
 
 ### Module+Offset persistence
 
-Select an Address List entry and click:
+Select a saved address and choose `More > Make module relative`:
 
 ```text
 Make Module Relative
@@ -178,6 +178,18 @@ F6      Toggle Freeze selected Address List entry
 
 No global keyboard hook is installed.
 
+## Running-game selection
+
+The main picker only shows detected games with visible, titled windows in the current Windows session.
+Spotify, Chrome, VS Code, launchers, common desktop tools, and background processes are excluded.
+Detection uses common game installation folders, known game executables, and Unity/Godot engine modules;
+graphics libraries alone do not qualify an app as a game. Some standalone games may not be recognized.
+
+Use `Refresh` beside `Running games` after opening a game. A single detected game is selected automatically.
+Advanced actions are under `Project`, `Tools`, or `More`; fast-scan alignment is under `Tools`.
+Explicit project targets still support owned test apps via `Project > Project settings` and F5,
+while Spotify, Chrome, and VS Code remain excluded from auto attach as well.
+
 ## Development build
 
 ```powershell
@@ -185,6 +197,14 @@ dotnet restore
 dotnet build
 dotnet run
 ```
+
+Run filter, live-discovery, and layout checks (no extra test packages):
+
+```powershell
+dotnet run --project Tests/MemoryLab.Tests.csproj
+```
+
+Add `-- --preview` to save WPF previews at normal and minimum window sizes under `Tests/Previews`.
 
 ## Portable Windows x64 publish
 
@@ -212,8 +232,8 @@ not need to have the .NET 8 runtime installed separately.
 ## Suggested test flow
 
 1. Run `TestTarget`.
-2. Start MemoryLab.
-3. Attach to `MemoryLab.TestTarget`.
+2. Start MemoryLab, then open `Project > Project settings`.
+3. Set the target process to `MemoryLab.TestTarget`, then use `Project > Auto attach` (F5).
 4. Scan `Health = 100`.
 5. Change Health from the TestTarget console.
 6. Narrow with Next Scan.

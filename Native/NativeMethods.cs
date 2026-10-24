@@ -4,6 +4,10 @@ namespace MemoryLab.Native;
 
 internal static class NativeMethods
 {
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsWindowVisible(IntPtr hWnd);
+
     [Flags]
     internal enum ProcessAccessFlags : uint
     {

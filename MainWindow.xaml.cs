@@ -35,6 +35,7 @@ public partial class MainWindow : Window
     private string? _activeScanType;
     private bool _hasScanSnapshot;
     private bool _refreshBusy;
+    private bool _refreshingProcesses;
     private DateTime _lastProcessHealthCheckUtc = DateTime.MinValue;
 
     public MainWindow()
@@ -66,11 +67,11 @@ public partial class MainWindow : Window
         Closed += MainWindow_Closed;
     }
 
-    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        RefreshProcesses();
         UpdateScanModeUi();
         UpdateProjectStatus();
+        await RefreshProcessesAsync();
     }
 
     private void MainWindow_Closed(object? sender, EventArgs e)
@@ -83,35 +84,69 @@ public partial class MainWindow : Window
         _memoryService.Dispose();
     }
 
-    private void RefreshProcesses_Click(object sender, RoutedEventArgs e)
+    private async void RefreshProcesses_Click(object sender, RoutedEventArgs e)
     {
-        RefreshProcesses();
+        await RefreshProcessesAsync();
     }
 
-    private void RefreshProcesses()
+    private async Task RefreshProcessesAsync()
     {
+        if (_refreshingProcesses || _scanCancellation is not null)
+            return;
+
+        _refreshingProcesses = true;
+        RefreshGamesButton.IsEnabled = false;
+        RefreshGamesButton.Content = "Refreshing...";
+
         try
         {
-            var processes = _processService.GetProcesses();
+            var selectedId = _selectedProcess?.Id;
+            var processes = await Task.Run(() => _processService.GetProcesses());
 
-            ProcessGrid.ItemsSource = processes;
+            GameComboBox.ItemsSource = processes;
+            GameComboBox.SelectedItem = processes.FirstOrDefault(p => p.Id == selectedId);
+            if (GameComboBox.SelectedItem is null && processes.Count == 1)
+                GameComboBox.SelectedItem = processes[0];
+
             ProcessCountText.Text = $"{processes.Count:N0}";
-            StatusText.Text = "Process list refreshed.";
+            NoGamesText.Text = processes.Count == 0 ? "No games detected" : "Choose a running game";
+            NoGamesText.Visibility = GameComboBox.SelectedItem is null ? Visibility.Visible : Visibility.Collapsed;
+            StatusText.Text = processes.Count == 0
+                ? "No games detected. Open a game, then refresh."
+                : $"{processes.Count:N0} running game(s). Select a game to attach.";
         }
         catch (Exception ex)
         {
             ShowError(ex);
         }
+        finally
+        {
+            _refreshingProcesses = false;
+            RefreshGamesButton.Content = "Refresh";
+            RefreshGamesButton.IsEnabled = _scanCancellation is null;
+        }
     }
 
-    private void ProcessGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void GameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        _selectedProcess = ProcessGrid.SelectedItem as ProcessItem;
+        _selectedProcess = GameComboBox.SelectedItem as ProcessItem;
+        AttachButton.IsEnabled = _selectedProcess is not null && _scanCancellation is null;
+        NoGamesText.Visibility = _selectedProcess is null ? Visibility.Visible : Visibility.Collapsed;
 
         if (_selectedProcess is not null)
         {
             StatusText.Text =
                 $"Selected: {_selectedProcess.Name}.exe (PID {_selectedProcess.Id})";
+        }
+    }
+
+    private void OpenActionsMenu_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { ContextMenu: { } menu } button)
+        {
+            menu.PlacementTarget = button;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
         }
     }
 
@@ -134,27 +169,7 @@ public partial class MainWindow : Window
             using var process = _processService.TryGetProcess(_selectedProcess.Id)
                 ?? throw new InvalidOperationException("Process sudah tidak berjalan.");
 
-            var moduleText = "N/A";
-            var baseAddressText = "N/A";
-
-            try
-            {
-                if (process.MainModule is not null)
-                {
-                    moduleText = process.MainModule.ModuleName;
-                    baseAddressText =
-                        $"0x{process.MainModule.BaseAddress.ToInt64():X16}";
-                }
-            }
-            catch
-            {
-            }
-
-            AttachedText.Text =
-                $"{_selectedProcess.Name}.exe\n" +
-                $"PID: {_selectedProcess.Id}\n" +
-                $"{moduleText}\n" +
-                $"{baseAddressText}";
+            AttachedText.Text = $"Attached: {_selectedProcess.Name}.exe · PID {_selectedProcess.Id}";
 
             NewScanInternal();
             RefreshSavedAddressValues();
@@ -258,7 +273,7 @@ public partial class MainWindow : Window
                     mode,
                     value1,
                     value2,
-                    AlignedCheckBox.IsChecked == true,
+                    AlignedScanMenuItem.IsChecked,
                     progress,
                     _scanCancellation.Token);
             }
@@ -270,7 +285,7 @@ public partial class MainWindow : Window
                     mode,
                     value1,
                     value2,
-                    AlignedCheckBox.IsChecked == true,
+                    AlignedScanMenuItem.IsChecked,
                     progress,
                     _scanCancellation.Token);
             }
@@ -703,6 +718,9 @@ public partial class MainWindow : Window
 
     private void TryAutoAttachProjectProcess()
     {
+        if (_scanCancellation is not null)
+            return;
+
         if (string.IsNullOrWhiteSpace(_projectProcessName))
         {
             MessageBox.Show(
@@ -730,8 +748,9 @@ public partial class MainWindow : Window
         {
             _memoryService.Attach(item.Id);
 
-            AttachedText.Text =
-                $"{item.Name}.exe\nPID: {item.Id}\nAuto-attached";
+            AttachedText.Text = $"Attached: {item.Name}.exe · PID {item.Id}";
+
+            NewScanInternal();
 
             RefreshSavedAddressValues();
 
@@ -1322,7 +1341,7 @@ public partial class MainWindow : Window
             if (alive is null)
             {
                 _memoryService.Detach();
-                AttachedText.Text = "Not attached";
+                AttachedText.Text = "No game attached";
 
                 foreach (var entry in _addressEntries)
                     entry.Value = "<process exited>";
@@ -1451,10 +1470,13 @@ public partial class MainWindow : Window
             _hasScanSnapshot;
 
         CancelScanButton.IsEnabled = scanning;
-        ProcessGrid.IsEnabled = !scanning;
+        GameComboBox.IsEnabled = !scanning;
+        AttachButton.IsEnabled = !scanning && _selectedProcess is not null;
+        RefreshGamesButton.IsEnabled = !scanning && !_refreshingProcesses;
+        AutoAttachMenuItem.IsEnabled = !scanning;
         ScanModeComboBox.IsEnabled = !scanning;
         ScanValueTypeComboBox.IsEnabled = !scanning;
-        AlignedCheckBox.IsEnabled = !scanning;
+        AlignedScanMenuItem.IsEnabled = !scanning;
 
         if (!scanning)
         {

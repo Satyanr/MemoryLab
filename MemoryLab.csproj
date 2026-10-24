@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <Compile Remove="TestTarget\**\*.cs" />
+    <Compile Remove="Tests\**\*.cs" />
+    <InternalsVisibleTo Include="MemoryLab.Tests" />
   </ItemGroup>
 
 </Project>
